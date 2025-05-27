@@ -1,0 +1,11 @@
+# python
+__pycache__/
+
+# env
+.env
+
+# logs
+logs/
+
+# data
+data/
