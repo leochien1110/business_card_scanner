@@ -1,0 +1,24 @@
+[Unit]
+Description=Business Card Scanner Service
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/home/pod-agx/workspaces/business_card_scanner
+ExecStartPre=-/usr/bin/docker stop business-card-scanner
+ExecStartPre=-/usr/bin/docker rm business-card-scanner
+ExecStart=/usr/bin/docker run -d --name business-card-scanner --network host --env-file .env --restart always business-card-scanner
+ExecStop=/usr/bin/docker stop business-card-scanner
+ExecStopPost=/usr/bin/docker rm business-card-scanner
+User=pod-agx
+Group=pod-agx
+Restart=on-failure
+RestartSec=10
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+
+[Install]
+WantedBy=multi-user.target
+ 

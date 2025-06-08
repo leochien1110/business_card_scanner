@@ -1,0 +1,30 @@
+{
+  "zh-tw": {
+    "Upload Business Cards": "上傳名片",
+    "Use Raw Images (Higher Quality)": "使用原始圖片（更高品質）",
+    "Custom Filename (optional)": "自訂檔案名稱（選用）",
+    "Start Processing": "開始處理",
+    "Stop": "停止",
+    "Image Preview": "圖片預覽",
+    "Uploaded Images": "已上傳圖片",
+    "Results": "結果",
+    "Extracted Data": "提取的資料",
+    "Download CSV": "下載 CSV",
+    "Vision Model": "視覺模型",
+    "Testing connection...": "測試連線中...",
+    "Connected": "已連線",
+    "Failed": "失敗",
+    "Processing...": "處理中...",
+    "Completed": "完成",
+    "Stopped": "已停止",
+    "my_contacts.csv": "我的聯絡人.csv",
+    "name": "姓名",
+    "company": "公司",
+    "title": "職稱",
+    "phone": "電話",
+    "email": "電子郵件",
+    "address": "地址",
+    "handwriting_notes": "手寫筆記",
+    "other": "其他"
+  }
+} 

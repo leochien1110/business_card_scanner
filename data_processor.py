@@ -39,8 +39,27 @@ def extract_from_image(file_path, use_raw_images=False):
             end = response.rfind('}') + 1
             response = response[start:end]
         
-        # Parse JSON
-        data = json.loads(response)
+        # Parse JSON with better error handling
+        try:
+            data = json.loads(response)
+        except json.JSONDecodeError as e:
+            # Try to fix common JSON issues
+            response_fixed = response
+            
+            # Fix unterminated strings by adding closing quotes
+            if "Unterminated string" in str(e):
+                # Find the last quote and add missing quote
+                last_quote_pos = response.rfind('"')
+                if last_quote_pos != -1 and last_quote_pos < len(response) - 1:
+                    response_fixed = response[:last_quote_pos+1] + '"' + response[last_quote_pos+1:]
+                    try:
+                        data = json.loads(response_fixed)
+                    except:
+                        raise Exception(f"JSON parsing failed even after fix attempt: {str(e)}")
+                else:
+                    raise Exception(f"JSON parsing failed with unterminated string: {str(e)}")
+            else:
+                raise Exception(f"JSON parsing failed: {str(e)}")
         
         # Ensure all required fields exist
         result = {
@@ -190,8 +209,30 @@ Return only a valid JSON array with the same structure, no comments or markdown.
             response = response[:-3]
         response = response.strip()
         
-        # Parse JSON array
-        post_processed_data = json.loads(response)
+        # Parse JSON array with better error handling
+        try:
+            post_processed_data = json.loads(response)
+        except json.JSONDecodeError as e:
+            # Try to fix common JSON issues for post-processing
+            response_fixed = response
+            
+            # Fix unterminated strings by adding closing quotes
+            if "Unterminated string" in str(e):
+                # Find the last quote and add missing quote
+                last_quote_pos = response.rfind('"')
+                if last_quote_pos != -1 and last_quote_pos < len(response) - 1:
+                    response_fixed = response[:last_quote_pos+1] + '"' + response[last_quote_pos+1:]
+                    try:
+                        post_processed_data = json.loads(response_fixed)
+                    except:
+                        print(f"❌ Post-processing JSON parsing failed even after fix attempt: {str(e)}")
+                        return results, None
+                else:
+                    print(f"❌ Post-processing JSON parsing failed with unterminated string: {str(e)}")
+                    return results, None
+            else:
+                print(f"❌ Post-processing JSON parsing failed: {str(e)}")
+                return results, None
         
         # Ensure it's a list and has the same length
         if isinstance(post_processed_data, list) and len(post_processed_data) == len(results):
@@ -199,7 +240,10 @@ Return only a valid JSON array with the same structure, no comments or markdown.
             print("📊 Post-processing applied: phone formatting, email validation, name capitalization, address formatting")
             return post_processed_data, token_usage
         else:
-            print(f"⚠️ Post-processing returned {len(post_processed_data)} items instead of {len(results)} - using original data")
+            if isinstance(post_processed_data, list):
+                print(f"⚠️ Post-processing returned {len(post_processed_data)} items instead of {len(results)} - using original data")
+            else:
+                print(f"⚠️ Post-processing returned {type(post_processed_data)} instead of list - using original data")
             return results, token_usage
         
     except Exception as e:
@@ -240,6 +284,10 @@ def extract(files, custom_filename, use_raw_images, vision_model, progress=gr.Pr
         if token_usage:
             total_extraction_tokens["input"] += token_usage.get("input", 0)
             total_extraction_tokens["output"] += token_usage.get("output", 0)
+        
+        # Add delay between API calls to prevent rate limiting (especially for Gemini)
+        if i < len(files) - 1:  # Don't delay after the last file
+            time.sleep(0.5)
     
     if not config.processing_stopped:
         print(f"✅ Extraction completed - processed {len(results)} cards")

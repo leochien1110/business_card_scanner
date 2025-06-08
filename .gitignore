@@ -1,11 +1,17 @@
 # python
 __pycache__/
 
-# env
+# env files (contains API keys)
 .env
+.env.*
+!env.example
 
 # logs
 logs/
 
 # data
 data/
+
+# Docker
+.env.backup
+docker-compose.yml.backup

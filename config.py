@@ -20,9 +20,15 @@ SERVERS = {
         "model": "qwen2.5vl:7b",
         "type": "ollama"
     },
-    "Gemini": {
+    "Gemini 2.0 Flash": {
         "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
         "model": "gemini-2.0-flash",
+        "type": "openai",
+        "api_key": os.getenv("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
+    },
+    "Gemini 2.5 Flash Preview": {
+        "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+        "model": "gemini-2.5-flash-preview-05-20",
         "type": "openai",
         "api_key": os.getenv("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
     }
@@ -37,7 +43,7 @@ POST_PROCESSING_CONFIG = {
 }
 
 # Current configuration
-current_config = SERVERS["Remote Ollama"]
+current_config = SERVERS["Gemini 2.0 Flash"]
 
 # Global processing control
 processing_stopped = False
