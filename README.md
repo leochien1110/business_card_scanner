@@ -20,7 +20,7 @@ A simple and clean business card scanner that extracts contact information from 
 1. (Optional) Create and enter the virtual environment:
    ```bash
    python -m venv venv
-   source venv/bin/activate
+   source .venv/bin/activate
    ```
    This is highly recommended to avoid conflicts with other Python packages.
 
